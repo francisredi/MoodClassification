@@ -1,0 +1,4 @@
+Severe storm moving in to Seattle area; possible downtime
+A severe storm is moving in to the Seattle area. Murkworks North is expecting to see 30-40mph winds with gusts to 65mph, with 50mph sustained winds and 75mph bursts possible, all day Saturday, February 4th. Power outages are expected and may be widespread, and if they are widespread, they are likely to affect us. We have battery backup, but do not have generators so will be offline if we lose power. Our downtime, if we go down, will be nearly exactly as long as any power outage, plus the amount of time it takes to check machines and come back up cleanly.
+
+As of 10 minutes ago, it was raining harder here than I have ever seen it rain here before, but the winds were light. However, we just had our first [and now second, and as I type that insert, third] power hits, and at least the first appears to have been geographically widespread. Hopefully we'll stay up, but if we don't, that's what happened.

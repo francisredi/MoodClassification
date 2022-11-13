@@ -1,0 +1,135 @@
+<!-- This entire Ant script was written by Francisco Rojas on 4/23/2007 -->
+
+<project name="Mood Classification" basedir="../" default="rebuild">
+
+    <!-- Local system paths -->
+    <!-- NOTE: If "dist" target is used, a local "projects/lib" directory will be utilized or created -->
+    <property name="distpath.project" value="./deploy"/>
+
+    <!-- Project settings -->
+    <property name="project.title" value="Mood Classification System"/>
+    <property name="project.distname" value="MCS"/>
+    <property name="project.version" value="1.0"/>
+
+    <!-- Path settings -->
+    <property name="doc.path" value="./doc"/>
+    <property name="doc.src" value="./src"/>
+
+    <!-- classpath for Struts 1.1 -->
+    <path id="compile.classpath">
+        <!--<pathelement path ="lib/servlet-api.jar" />
+        <pathelement path ="lib/commons-beanutils.jar"/>
+        <pathelement path ="lib/commons-digester.jar"/>
+        <pathelement path ="lib/struts.jar"/>
+        <pathelement path ="lib/hibernate3.jar"/>
+        <pathelement path ="lib/commons-lang.jar" />
+	    <pathelement path ="lib/antlr-2.7.4.jar" />
+	    <pathelement path ="lib/cglib-full-2.0.2.jar" />
+	    <pathelement path ="lib/commons-collections-2.1.1.jar" />
+	    <pathelement path ="lib/commons-logging-1.0.4.jar" />
+	    <pathelement path ="lib/dom4j-1.5.2.jar" />
+	    <pathelement path ="lib/hsqldb.jar" />
+	    <pathelement path ="lib/jdbc2_0-stdext.jar" />
+	    <pathelement path ="lib/jta.jar" />
+	    <pathelement path ="lib/log4j-1.2.9.jar" />
+	    <pathelement path ="lib/mysql-connector-java-3.1.10-bin.jar" />-->
+        <pathelement path ="classes"/>
+        <pathelement path ="${classpath}"/>
+    </path>
+
+    <!-- Remove classes directory for clean build -->
+    <target name="clean">
+      <delete dir="classes"/>
+      <mkdir  dir="classes"/>
+    </target>
+	
+	<!-- Check timestamp on files -->
+    <target name="prepare">
+        <tstamp/>
+    </target>
+	
+	<!-- Copy any resource or configuration files -->
+    <target name="resources">
+        <copy todir="classes" includeEmptyDirs="no">
+            <fileset dir="src">
+            <patternset>
+            	<include name="**/*.dat"/>
+            	<include name="**/*.txt"/>
+                <include name="**/*.conf"/>
+                <include name="**/*.properties"/>
+                <include name="**/*.xml"/>
+            </patternset>
+            </fileset>
+        </copy>
+    </target>
+	
+	<!-- Normal build of application -->
+    <target name="compile" depends="prepare,resources">
+        <javac srcdir="src" destdir="classes">
+            <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+	
+	<!-- Remove deploy folder automatically -->
+	<target name="deleteArchive">
+		 <delete dir="${distpath.project}"/>
+	</target>
+	
+	<!-- Build entire project -->
+	<target name="project" depends="clean,prepare,compile,deleteArchive"/>
+	
+	<!-- Create binary distribution -->
+    <target name="createArchive">
+      <mkdir
+        dir="${distpath.project}"/>
+      <jar
+        jarfile="${distpath.project}/${project.distname}.jar"
+        basedir="./classes"
+      >
+      	<manifest>
+      		<attribute name="Main-Class" value="src.classification.mood.Classifier" />
+      	</manifest>
+      </jar>
+      <copy
+        file="${distpath.project}/${project.distname}.jar"
+        todir="${distpath.project}"/>
+
+      <!--<war
+        basedir="../"
+        warfile="${distpath.project}/${project.distname}.war"
+        webxml="web.xml">
+        <exclude name="${distpath.project}/${project.distname}.war"/>
+       </war>-->
+    </target>
+	
+	<!-- Build project and create distribution-->
+	<target name="rebuild" depends="project,createArchive"/>
+
+    <!-- Build Javadoc documentation -->
+    <target name="javadoc" description="Generate JavaDoc API docs">
+        <delete dir="./doc"/>
+        <mkdir dir="./doc/api"/>
+        <javadoc sourcepath="."
+            destdir="./doc/api"
+        	classpath="${servlet.jar}:${jdbc20ext.jar}"
+            packagenames="src.*"
+            author="true"
+            private="true"
+            version="true"
+            windowtitle="${project.title} API Documentation"
+            doctitle="&lt;h1&gt;${project.title} Documentation (Version ${project.version})&lt;/h1&gt;"
+            bottom="Copyright 2007">
+            <classpath refid="compile.classpath"/>
+        </javadoc>
+    </target>
+	
+	<target name="run" description="Run MCS (the JAR file created)">
+		<java dir="${distpath.project}" jar="${distpath.project}/${project.distname}.jar" fork="true" failonerror="true" maxmemory="128m">
+			<arg value="-h"/>
+			<!--<classpath>
+	           <pathelement location="dist/test.jar"/>
+	           <pathelement path="${java.class.path}"/>
+	        </classpath>-->
+		</java>
+	</target>
+</project>
